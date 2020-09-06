@@ -52,7 +52,7 @@ With every tagged release of this GitHub repository a new Docker container is pu
 You can pull in and use the same.
 
 ```
-$ docker pull ghcr.io/palnabarun/12factor-todo:<latest|tag>
+$ docker pull ghcr.io/palnabarun/12factor-todo:<tag>
 $ docker run --rm \
     --name 12factor
     --publish 8000:8000
@@ -61,7 +61,7 @@ $ docker run --rm \
     --env PGUSER=baz
     --env PGPASSWORD=qux
     --env PGDATABASE=todo
-    ghcr.io/palnabarun/12factor-todo:<latest|tag>
+    ghcr.io/palnabarun/12factor-todo:<tag>
 ```
 
 ## Talk
