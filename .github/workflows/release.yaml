@@ -1,0 +1,37 @@
+on:
+  push:
+    tags:
+      - "v*"
+
+name: Create a release, build and push docker image to GHCR
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Build and push the docker image
+        uses: docker/build-push-action@v1
+        with:
+          username: palnabarun
+          password: ${{ secrets.CR_PAT }}
+          registry: ghcr.io
+          repository: palnabarun/12factor-todo
+          tag_with_ref: true
+      - name: Set RELEASE_TAG env var
+        run: echo ::set-env name=RELEASE_TAG::${GITHUB_REF#refs/*/}
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            You can use the Docker image for the release:
+              ```
+              $ docker pull ghcr.io/palnabarun/12factor-todo:${{ env.RELEASE_TAG }}
+              ```
+          draft: false
+          prerelease: false
