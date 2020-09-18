@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:12
+    environment:
+    - POSTGRES_USER=todo
+    - POSTGRES_PASSWORD=verystrongpass
+    - POSTGRES_DB=todo
+    - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - pgdata:/var/lib/postgresql/data/pgdata
+      - ./schema/schema.sql:/docker-entrypoint-initdb.d/init.sql
+  todo:
+    build: .
+    environment:
+      - PGHOST=postgres
+      - PGPORT=5432
+      - PGUSER=todo
+      - PGPASSWORD=verystrongpass
+      - PGDATABASE=todo
+    links:
+      - "postgres:postgres"
+    ports:
+      - "8000:8000"
+
+volumes:
+  pgdata:
