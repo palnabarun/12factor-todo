@@ -4,7 +4,7 @@ from typing import List, Union
 from fastapi import FastAPI, Response, status
 
 from . import config
-from .models import Task, TaskBase, TaskCreate, TaskUpdate
+from .models import Task, TaskBase, TaskCreate, TaskUpdate, db
 
 api = FastAPI()
 
@@ -18,6 +18,23 @@ handler.setLevel(log_level)
 handler.setFormatter(formatter)
 
 logger.addHandler(handler)
+
+@api.get("/ready")
+def readiness(response: Response):
+    try:
+        db.query("select 1;")
+        response.status_code = 200
+    except:
+        response.status_code = 418
+
+
+@api.get("/alive")
+def liveness(response: Response):
+    try:
+        db.query("select 1;")
+        response.status_code = 200
+    except:
+        response.status_code = 418
 
 
 @api.get("/", response_model=List[Task])
